@@ -5,6 +5,7 @@ import com.alexhensan.logindemo.model.User;
 import com.alexhensan.logindemo.registration.RegistrationRequest;
 import com.alexhensan.logindemo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,7 +14,8 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class UserService implements IUserService{
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
     @Override
     public List<User> getUsers() {
         return userRepository.findAll();
@@ -30,7 +32,7 @@ public class UserService implements IUserService{
         newUser.setFirstName(request.firstName());
         newUser.setLastName(request.lastName());
         newUser.setEmail(request.email());
-        newUser.setPassword(request.password());
+        newUser.setPassword(passwordEncoder.encode(request.password()));
         newUser.setRole(request.role());
 
         return userRepository.save(newUser);
