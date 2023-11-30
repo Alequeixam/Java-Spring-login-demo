@@ -3,8 +3,9 @@ package com.alexhensan.logindemo.service;
 import com.alexhensan.logindemo.exceptions.UserAlreadyExistsException;
 import com.alexhensan.logindemo.model.User;
 import com.alexhensan.logindemo.registration.RegistrationRequest;
+import com.alexhensan.logindemo.registration.token.VerificationToken;
 import com.alexhensan.logindemo.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
+import com.alexhensan.logindemo.repository.VerificationTokenRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +15,12 @@ import java.util.Optional;
 @Service
 public class UserService implements IUserService{
     private final UserRepository userRepository;
+    private final VerificationTokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, VerificationTokenRepository tokenRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.tokenRepository = tokenRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -46,5 +49,11 @@ public class UserService implements IUserService{
     @Override
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public void saveUserVerifcationToken(String token, User user) {
+        var verificationToken = new VerificationToken(token, user);
+        tokenRepository.save(verificationToken);
     }
 }

@@ -10,4 +10,6 @@ public interface IUserService {
     List<User> getUsers();
     User registerUser(RegistrationRequest request);
     Optional<User> findByEmail(String email);
+
+    void saveUserVerifcationToken(String token, User user);
 }
